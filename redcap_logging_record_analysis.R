@@ -37,30 +37,31 @@ colnames(mad_records_transferred_by_day) = column_names
 nig_records_transferred_by_day$date = as.Date(nig_records_transferred_by_day$date)
 mad_records_transferred_by_day$date = as.Date(mad_records_transferred_by_day$date)
 
-plot(
-  gvisCalendar(nig_records_transferred_by_day, 
-               datevar = "date", 
-               numvar = "records",
-               options = list(
-                 title    = "Records transferred from Nigeria",
-                 calendar = "{cellSize: 25}",
-                 noDataPattern = "{backgroundColor: '#ffffff'}",
-                 width    = 1500,
-                 height   = 320
-               )
+nig_calendar = gvisCalendar(
+  nig_records_transferred_by_day, 
+  datevar = "date", 
+  numvar = "records",
+  options = list(
+    title    = "Nigeria: Ohaukwu & Akure South",
+    calendar = "{cellSize: 25}",
+    noDataPattern = "{backgroundColor: '#ffffff'}",
+    width    = 1500,
+    height   = 320
+    )
   )
-)
 
-plot(
-  gvisCalendar(mad_records_transferred_by_day, 
-               datevar = "date", 
-               numvar = "records",
-               options = list(
-                 title    = "Records transferred from Madagascar",
-                 calendar = "{cellSize: 25}",
-                 noDataPattern = "{backgroundColor: '#ffffff'}",
-                 width    = 1500,
-                 height   = 320
-               )
+mad_calendar = gvisCalendar(
+  mad_records_transferred_by_day, 
+  datevar = "date", 
+  numvar = "records",
+  options = list(
+    title    = "Madagascar: Mananjary & Toliary II",
+    calendar = "{cellSize: 25}",
+    noDataPattern = "{backgroundColor: '#ffffff'}",
+    width    = 1500,
+    height   = 320
+    )
   )
-)
+
+calendar = gvisMerge(nig_calendar, mad_calendar)
+plot(calendar)
