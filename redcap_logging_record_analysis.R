@@ -41,9 +41,11 @@ records_transferred_by_day_calendar = function(logging_file, lang = "EN", data_m
     datevar = "date", 
     numvar = "records",
     options = list(
-      title    = title,
+      title    = paste0(title, " (", nrow(creation_logs), " records sent)"),
+      titleTextStyle = "{color: 'red', fontSize: 12}",
       calendar = "{cellSize: 25}",
-      noDataPattern = "{backgroundColor: '#ffffff'}",
+      # noDataPattern = "{backgroundCasxolor: '#ffffff'}",
+      colorAxis = "{colors:['#ECF2FF','#17357A']}",
       width    = 1500,
       height   = 320
     )
