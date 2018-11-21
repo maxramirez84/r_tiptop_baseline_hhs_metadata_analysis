@@ -40,6 +40,32 @@ records_transferred_by_day_calendar = function(logging_file, lang = "EN", data_m
                                      regexpr(interview_date_mark, creation_logs$description) + 18, 
                                      regexpr(interview_date_mark, creation_logs$description) + 18 + 9)
   
+  # Indicator: Average of time that a new record remains in the Tablet before being transferred, in
+  # days and disaggregated by area.
+  creation_logs$date_diff = as.Date(creation_logs$transfer_date) - as.Date(creation_logs$record_date)
+  print(
+    paste0(
+      "The average of time that a record remains in the Tablet in distric 1 (", 
+      title,
+      ") is ", 
+      mean(creation_logs$date_diff[regexpr("district = '1'", creation_logs$description) >= 0]),
+      " days (",
+      nrow(creation_logs[regexpr("district = '1'", creation_logs$description) >= 0, ]),
+      " records)."
+    )
+  )
+  print(
+    paste0(
+      "The average of time that a record remains in the Tablet in distric 2 (", 
+      title,
+      ") is ", 
+      mean(creation_logs$date_diff[regexpr("district = '2'", creation_logs$description) >= 0]),
+      " days (",
+      nrow(creation_logs[regexpr("district = '2'", creation_logs$description) >= 0, ]),
+      " records)."
+    )
+  )
+  
   records_transferred_by_day = as.data.frame(table(creation_logs$transfer_date))
   
   colnames(records_transferred_by_day) = c("transfer_date", "records")
@@ -50,7 +76,7 @@ records_transferred_by_day_calendar = function(logging_file, lang = "EN", data_m
     datevar = "transfer_date", 
     numvar = "records",
     options = list(
-      title    = paste0("TRANSFERS: ", title, " (", nrow(creation_logs), " records sent)"),
+      title    = paste0("Transferred ", nrow(creation_logs), " records from ", title),
       titleTextStyle = "{color: 'red', fontSize: 12}",
       calendar = "{cellSize: 25}",
       # noDataPattern = "{backgroundCasxolor: '#ffffff'}",
@@ -70,11 +96,11 @@ records_transferred_by_day_calendar = function(logging_file, lang = "EN", data_m
     datevar = "record_date", 
     numvar = "records",
     options = list(
-      title    = paste0("COLLECTED: ", title, " (", nrow(creation_logs), " records collected)"),
+      title    = paste0("Captured ", nrow(creation_logs), " records in ", title),
       titleTextStyle = "{color: 'red', fontSize: 12}",
       calendar = "{cellSize: 25}",
       # noDataPattern = "{backgroundCasxolor: '#ffffff'}",
-      colorAxis = "{colors:['#ECF2FF','#17357A']}",
+      colorAxis = "{colors:['#E2AAAA','#8B2D2D']}",
       width    = 1500,
       height   = 320
     )
@@ -83,14 +109,10 @@ records_transferred_by_day_calendar = function(logging_file, lang = "EN", data_m
   return(gvisMerge(collected_calendar, transfers_calendar))
 }
 
-nig_calendar = records_transferred_by_day_calendar(nig_logging_file, "EN", nig_data_manager,
-                                                   "NIG: Ohaukwu & Akure South")
-mad_calendar = records_transferred_by_day_calendar(mad_logging_file, "FR", mad_data_manager,
-                                                   "MAD: Mananjary & Toliary II")
-drc_calendar = records_transferred_by_day_calendar(drc_logging_file, "FR", drc_data_manager,
-                                                   "DRC: Kenge & Bulungu")
-moz_calendar = records_transferred_by_day_calendar(moz_logging_file, "EN", moz_data_manager,
-                                                   "MOZ: Nhamatanda & Meconta")
+nig_calendar = records_transferred_by_day_calendar(nig_logging_file, "EN", nig_data_manager, "NIG")
+mad_calendar = records_transferred_by_day_calendar(mad_logging_file, "FR", mad_data_manager, "MAD")
+drc_calendar = records_transferred_by_day_calendar(drc_logging_file, "FR", drc_data_manager, "DRC")
+moz_calendar = records_transferred_by_day_calendar(moz_logging_file, "EN", moz_data_manager, "MOZ")
 
 calendar = gvisMerge(gvisMerge(gvisMerge(nig_calendar, mad_calendar), drc_calendar), moz_calendar)
 plot(calendar)
